@@ -14,7 +14,7 @@ const events = {
   stopped: 'stopped'
 } as const
 
-class PgBoss extends EventEmitter<types.PgBossEventMap> {
+export class PgBoss extends EventEmitter<types.PgBossEventMap> {
   #stoppingOn: number | null
   #stopped: boolean
   #starting: boolean | undefined
@@ -69,21 +69,6 @@ class PgBoss extends EventEmitter<types.PgBossEventMap> {
   }
 
   // Public API
-
-  static getConstructionPlans (schema?: string) {
-    return Contractor.constructionPlans(schema)
-  }
-
-  static getMigrationPlans (schema?: string, version?: number) {
-    return Contractor.migrationPlans(schema, version)
-  }
-
-  static getRollbackPlans (schema?: string, version?: number) {
-    return Contractor.rollbackPlans(schema, version)
-  }
-
-  static states: types.JobStates = plans.JOB_STATES
-  static policies: types.QueuePolicies = plans.QUEUE_POLICIES
 
   async start (): Promise<this> {
     if (this.#starting || this.#started) {
@@ -349,10 +334,21 @@ class PgBoss extends EventEmitter<types.PgBossEventMap> {
   }
 }
 
-export default PgBoss
+export function getConstructionPlans (schema?: string) {
+  return Contractor.constructionPlans(schema)
+}
 
-export const states = PgBoss.states
-export const policies = PgBoss.policies
+export function getMigrationPlans (schema?: string, version?: number) {
+  return Contractor.migrationPlans(schema, version)
+}
+
+export function getRollbackPlans (schema?: string, version?: number) {
+  return Contractor.rollbackPlans(schema, version)
+}
+
+export const states: types.JobStates = plans.JOB_STATES
+
+export const policies: types.QueuePolicies = plans.QUEUE_POLICIES
 
 export type {
   ConnectionOptions,
